@@ -20,7 +20,7 @@ class Organizations(BaseModel):
     title: str = Field(max_length=30)
     phone_numbers: list[PhoneNumber] = Field(default_factory=list)
     building: BuildingBase
-    activities: ActivityBase
+    activities: list[ActivityBase] = Field(default_factory=list)
 
 
     @classmethod
