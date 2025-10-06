@@ -6,8 +6,8 @@ from app.domains.buildings import BuildingBase
 class PhoneNumber(BaseModel):
     phone_number: str
 
-    @field_validator('phone_number')
     @classmethod
+    @field_validator('phone_number')
     def validate_number(cls, v: str) -> str:
         parsed = phonenumbers.parse(v, None)
         if not phonenumbers.is_valid_number(parsed):
