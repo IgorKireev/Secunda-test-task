@@ -29,3 +29,12 @@ class BuildingBase(BaseModel):
             raise ValueError("Coordinates cannot be exactly (0, 0)")
         return v
 
+
+class BuildingCreate(BuildingBase):
+    pass
+
+class BuildingRead(BuildingBase):
+    id: int
+
+    class Config:
+        from_attributes = True
