@@ -3,7 +3,7 @@ import regex
 
 
 class Address(BaseModel):
-    address: str = Field(min_length=5, max_length=200)
+    address: str = Field(min_length=5, max_length=50)
 
     @classmethod
     @field_validator('address')
