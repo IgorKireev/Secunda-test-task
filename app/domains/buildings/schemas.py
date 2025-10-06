@@ -12,3 +12,7 @@ class Address(BaseModel):
             raise ValueError(f"Invalid address: {v}")
         return v.strip()
 
+
+class Coordinates(BaseModel):
+    latitude: condecimal(ge=-90, le=90)
+    longitude: condecimal(ge=-180, le=180)
