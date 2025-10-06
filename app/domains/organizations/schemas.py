@@ -17,7 +17,7 @@ class PhoneNumber(BaseModel):
 
 
 class Organizations(BaseModel):
-    title: str
+    title: str = Field(max_length=30)
     phone_numbers: list[PhoneNumber] = Field(default_factory=list)
     building: BuildingBase
     activities: ActivityBase
