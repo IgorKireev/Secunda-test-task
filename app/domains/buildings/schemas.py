@@ -16,3 +16,16 @@ class Address(BaseModel):
 class Coordinates(BaseModel):
     latitude: condecimal(ge=-90, le=90)
     longitude: condecimal(ge=-180, le=180)
+
+
+class BuildingBase(BaseModel):
+    address: Address
+    coordinates: Coordinates
+
+    @classmethod
+    @field_validator('coordinates')
+    def validate_coordinates_meaningful(cls, v: Coordinates) -> Coordinates:
+        if v.latitude == 0 and v.longitude == 0:
+            raise ValueError("Coordinates cannot be exactly (0, 0)")
+        return v
+
