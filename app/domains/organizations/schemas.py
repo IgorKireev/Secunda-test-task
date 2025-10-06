@@ -1,5 +1,6 @@
 from pydantic import BaseModel, field_validator, Field
 import phonenumbers
+from app.domains.activities import ActivityBase
 from app.domains.buildings import BuildingBase
 
 
@@ -19,6 +20,7 @@ class Organizations(BaseModel):
     title: str
     phone_numbers: list[PhoneNumber] = Field(default_factory=list)
     building: BuildingBase
+    activities: ActivityBase
 
 
     @classmethod
