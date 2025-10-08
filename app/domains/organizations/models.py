@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 
 class Organization(Base):
-    __tablename__ = "organization"
+    __tablename__ = "organizations"
 
     title: Mapped[str] = mapped_column(String(30))
     building_id: Mapped[int] = mapped_column(ForeignKey("buildings.id", ondelete="SET NULL"))
@@ -20,7 +20,7 @@ class Organization(Base):
 
 
 class PhoneNumber(Base):
-    __tablename__ = "numbers"
+    __tablename__ = "phone_numbers"
 
     phone_number: Mapped[str]
     organization_id: Mapped[int] = mapped_column(ForeignKey("organization.id", ondelete="SET NULL"))

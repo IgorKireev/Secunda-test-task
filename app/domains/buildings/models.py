@@ -7,6 +7,8 @@ if TYPE_CHECKING:
 
 
 class Building(Base):
+    __tablename__ = "buildings"
+
     address: Mapped[str] = mapped_column(String(50))
     latitude: Mapped[float] = mapped_column(DECIMAL(9, 6), nullable=False)
     longitude: Mapped[float] = mapped_column(DECIMAL(9, 6), nullable=False)
