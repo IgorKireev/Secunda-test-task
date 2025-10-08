@@ -27,11 +27,14 @@ class BuildingBase(BaseModel):
     def validate_coordinates_meaningful(cls, v: Coordinates) -> Coordinates:
         if v.latitude == 0 and v.longitude == 0:
             raise ValueError("Coordinates cannot be exactly (0, 0)")
+        v.latitude = round(float(v.latitude), 6)
+        v.longitude = round(float(v.longitude), 6)
         return v
 
 
 class BuildingCreate(BuildingBase):
     pass
+
 
 class BuildingRead(BuildingBase):
     id: int
