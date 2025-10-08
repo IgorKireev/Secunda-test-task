@@ -6,6 +6,19 @@ if TYPE_CHECKING:
     from app.domains.buildings.models import Building
 
 
+class Organization(Base):
+    __tablename__ = "organization"
+
+    title: Mapped[str] = mapped_column(String(30))
+    building_id: Mapped[int] = mapped_column(ForeignKey("buildings.id", ondelete="SET NULL"))
+    phone_number: Mapped[list["PhoneNumber"]] = relationship(
+        back_populates="organization",
+        cascade="all, delete-orphan",
+    )
+    building: Mapped["Building"] = relationship(back_populates="organization")
+    activities: Mapped[list["association_table"]] = relationship(back_populates="organizations")
+
+
 class PhoneNumber(Base):
     __tablename__ = "numbers"
 
