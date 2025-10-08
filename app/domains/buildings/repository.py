@@ -1,9 +1,8 @@
+from collections.abc import Sequence
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
-
 from app.domains import Building
-from app.domains.buildings.schemas import BuildingCreate, Coordinates
 
 
 class BuildingRepository():
@@ -11,7 +10,7 @@ class BuildingRepository():
         self.session = session
 
 
-    async def get_buildings(self) -> list[Building]:
+    async def get_buildings(self) -> Sequence[Building]:
         query = (
             select(Building)
             .options(selectinload(Building.organization))
@@ -30,12 +29,7 @@ class BuildingRepository():
         return building.scalar_one_or_none()
 
 
-    async def create_building(self, building_data: BuildingCreate) -> Building:
-        building = Building(
-            address=building_data.address,
-            latitude=Coordinates(latitude=building_data.latitude),
-            longitude=Coordinates(longitude=building_data.longitude),
-        )
+    async def create_building(self, building: Building) -> Building:
         self.session.add(building)
         await self.session.commit()
         await self.session.refresh(building)
