@@ -1,7 +1,7 @@
+from collections.abc import Sequence
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload, joinedload
-from collections.abc import Sequence
 from app.domains import Organization
 
 
