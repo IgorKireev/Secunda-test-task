@@ -12,7 +12,7 @@ class Organization(Base):
 
     title: Mapped[str] = mapped_column(String(30))
     building_id: Mapped[int] = mapped_column(ForeignKey("buildings.id", ondelete="SET NULL"))
-    phone_number: Mapped[list["PhoneNumber"]] = relationship(
+    phone_numbers: Mapped[list["PhoneNumber"]] = relationship(
         back_populates="organization",
         cascade="all, delete-orphan",
     )
