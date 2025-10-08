@@ -1,16 +1,15 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload, joinedload
-
-from app.domains import Organization, OrganizationCreate
-from app.domains.organizations.schemas import PhoneNumber
+from collections.abc import Sequence
+from app.domains import Organization
 
 
 class OrganizationRepository():
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
-    async def get_organizations(self) -> list[Organization]:
+    async def get_organizations(self) -> Sequence[Organization]:
         query = (
             select(Organization)
             .options(joinedload(Organization.building))
@@ -30,3 +29,13 @@ class OrganizationRepository():
         )
         organization = await self.session.execute(query)
         return organization.scalar_one_or_none()
+
+    async def create_organization(self, organization: Organization) -> Organization:
+        self.session.add(organization)
+        await self.session.commit()
+        await self.session.refresh(organization)
+        return organization
+
+    async def delete_organization(self, organization: Organization) -> None:
+        await self.session.delete(organization)
+        await self.session.commit()
