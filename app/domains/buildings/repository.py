@@ -36,6 +36,6 @@ class BuildingRepository():
         return building
 
 
-    async def delete_building(self, building: Building):
+    async def delete_building(self, building: Building) -> None:
         await self.session.delete(building)
         await self.session.commit()
