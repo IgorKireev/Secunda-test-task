@@ -2,7 +2,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app.domains import Activity
 from app.domains.activities.repository import ActivityRepository
-from app.domains.activities.schemas import ActivityRead, ActivityCreate
+from app.domains.activities.schemas import ActivityDTO, ActivityRelDTO, ActivityCreate
 from app.exceptions.exceptions import NotFoundError, DataIntegrityError
 
 
@@ -11,29 +11,29 @@ class ActivityService:
         self.activity_repository = activity_repository
 
 
-    async def get_activities(self) -> list[ActivityRead]:
+    async def get_activities(self) -> list[ActivityRelDTO]:
         activities = await self.activity_repository.get_activities()
         return [
-            ActivityRead.model_validate(activity)
+            ActivityRelDTO.model_validate(activity)
             for activity in activities
         ]
 
 
-    async def get_activity(self, activity_id: int) -> ActivityRead:
+    async def get_activity(self, activity_id: int) -> ActivityRelDTO:
         activity = await self.activity_repository.get_activity(activity_id)
         if not activity:
             raise NotFoundError(entity="Activity")
-        return ActivityRead.model_validate(activity)
+        return ActivityRelDTO.model_validate(activity)
 
 
-    async def create_activity(self, activity_data: ActivityCreate) -> ActivityRead:
+    async def create_activity(self, activity_data: ActivityCreate) -> ActivityRelDTO:
         activity_orm = Activity(
             name=activity_data.name,
         )
         try:
            activity = await self.activity_repository.create_activity(activity_orm)
            await self.activity_repository.session.commit()
-           return ActivityRead.model_validate(activity)
+           return ActivityRelDTO.model_validate(activity)
         except IntegrityError as e:
             await self.activity_repository.session.rollback()
             raise DataIntegrityError(f"Could not create activity: {str(e.orig)}")
