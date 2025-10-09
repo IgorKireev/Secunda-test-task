@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from sqlalchemy import select
+from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from app.domains import Activity
@@ -37,3 +37,15 @@ class ActivityRepository:
 
     async def delete_activity(self, activity: Activity) -> None:
         await self.session.delete(activity)
+
+    async def get_activities_by_ids(self, activities_ids: list[int]) -> Sequence[Activity]:
+        query = (
+            select(Activity)
+            .filter(
+                Activity.id.in_(activities_ids)
+            )
+        )
+        activities = await self.session.execute(query)
+        return activities.scalars().all()
+
+
