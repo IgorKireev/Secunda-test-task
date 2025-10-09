@@ -5,7 +5,7 @@ from sqlalchemy.orm import selectinload
 from app.domains import Building
 
 
-class BuildingRepository():
+class BuildingRepository:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
@@ -19,7 +19,7 @@ class BuildingRepository():
         return buildings.scalars().all()
 
 
-    async def get_building(self, building_id) -> Building | None:
+    async def get_building(self, building_id: int) -> Building | None:
         query = (
             select(Building)
             .filter(Building.id == building_id)
@@ -31,11 +31,9 @@ class BuildingRepository():
 
     async def create_building(self, building: Building) -> Building:
         self.session.add(building)
-        await self.session.commit()
-        await self.session.refresh(building)
+        await self.session.flush()
         return building
 
 
     async def delete_building(self, building: Building) -> None:
         await self.session.delete(building)
-        await self.session.commit()
