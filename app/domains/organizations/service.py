@@ -50,3 +50,14 @@ class OrganizationService:
             raise DataIntegrityError(f"Could not create organization: {str(e.orig)}")
 
 
+    async def delete_organization(self, organization_id: int) -> None:
+        organization = await self.organization_repository.get_organization(organization_id)
+        if not organization:
+            raise NotFoundError(entity="Organization")
+        try:
+            await self.organization_repository.delete_organization(organization)
+            await self.organization_repository.session.commit()
+        except IntegrityError:
+            await self.organization_repository.session.rollback()
+            raise DataIntegrityError
+
