@@ -5,7 +5,7 @@ from sqlalchemy.orm import selectinload, joinedload
 from app.domains import Organization
 
 
-class OrganizationRepository():
+class OrganizationRepository:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
