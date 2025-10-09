@@ -33,10 +33,10 @@ class BuildingService:
         )
         try:
             building = await self.building_repository.create_building(building_orm)
-            await self.building_repository.session.commit()
+            await self.building_repository.commit()
             return BuildingRelDTO.model_validate(building)
         except IntegrityError as e:
-            await self.building_repository.session.rollback()
+            await self.building_repository.rollback()
             raise DataIntegrityError(f"Could not create building: {str(e.orig)}")
 
 
@@ -46,7 +46,7 @@ class BuildingService:
             raise NotFoundError(entity="Building")
         try:
             await self.building_repository.delete_building(building)
-            await self.building_repository.session.commit()
+            await self.building_repository.commit()
         except IntegrityError:
-            await self.building_repository.session.rollback()
+            await self.building_repository.rollback()
             raise DataIntegrityError

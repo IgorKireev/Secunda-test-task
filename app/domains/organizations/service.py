@@ -1,5 +1,4 @@
 from sqlalchemy.exc import IntegrityError
-
 from app.domains.organizations.models import Organization
 from app.domains.organizations.repository import OrganizationRepository
 from app.domains.organizations.schemas import OrganizationRelDTO, OrganizationCreate, PhoneNumber
@@ -43,10 +42,10 @@ class OrganizationService:
         )
         try:
             organization = await self.organization_repository.create_organization(organization_orm)
-            await self.organization_repository.session.commit()
+            await self.organization_repository.commit()
             return OrganizationRelDTO.model_validate(organization)
         except IntegrityError as e:
-            await self.organization_repository.session.rollback()
+            await self.organization_repository.rollback()
             raise DataIntegrityError(f"Could not create organization: {str(e.orig)}")
 
 
@@ -56,8 +55,8 @@ class OrganizationService:
             raise NotFoundError(entity="Organization")
         try:
             await self.organization_repository.delete_organization(organization)
-            await self.organization_repository.session.commit()
+            await self.organization_repository.commit()
         except IntegrityError:
-            await self.organization_repository.session.rollback()
+            await self.organization_repository.rollback()
             raise DataIntegrityError
 

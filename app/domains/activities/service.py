@@ -32,10 +32,10 @@ class ActivityService:
         )
         try:
            activity = await self.activity_repository.create_activity(activity_orm)
-           await self.activity_repository.session.commit()
+           await self.activity_repository.commit()
            return ActivityRelDTO.model_validate(activity)
         except IntegrityError as e:
-            await self.activity_repository.session.rollback()
+            await self.activity_repository.rollback()
             raise DataIntegrityError(f"Could not create activity: {str(e.orig)}")
 
 
@@ -45,9 +45,9 @@ class ActivityService:
             raise NotFoundError(entity="Activity")
         try:
             await self.activity_repository.delete_activity(activity)
-            await self.activity_repository.session.commit()
+            await self.activity_repository.commit()
         except IntegrityError:
-            await self.activity_repository.session.rollback()
+            await self.activity_repository.rollback()
             raise DataIntegrityError
 
     async def get_activities_by_ids(self, activities_ids: list[int]) -> list[ActivityDTO]:
