@@ -12,7 +12,10 @@ class BuildingService:
 
     async def get_buildings(self) -> list[BuildingRead]:
         buildings_orm = await self.building_repository.get_buildings()
-        return [BuildingRead.model_validate(building) for building in buildings_orm]
+        return [
+            BuildingRead.model_validate(building)
+            for building in buildings_orm
+        ]
 
 
     async def get_building(self, building_id: int) -> BuildingRead:
