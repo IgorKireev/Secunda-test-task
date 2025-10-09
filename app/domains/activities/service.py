@@ -37,3 +37,15 @@ class ActivityService:
         except IntegrityError as e:
             await self.activity_repository.session.rollback()
             raise DataIntegrityError(f"Could not create activity: {str(e.orig)}")
+
+
+    async def delete_activity(self, activity_id: int) -> None:
+        activity = await self.activity_repository.get_activity(activity_id)
+        if not activity:
+            raise NotFoundError(entity="Activity")
+        try:
+            await self.activity_repository.delete_activity(activity)
+            await self.activity_repository.session.commit()
+        except IntegrityError:
+            await self.activity_repository.session.rollback()
+            raise DataIntegrityError
