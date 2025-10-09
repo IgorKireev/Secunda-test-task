@@ -49,3 +49,12 @@ class ActivityService:
         except IntegrityError:
             await self.activity_repository.session.rollback()
             raise DataIntegrityError
+
+    async def get_activities_by_ids(self, activities_ids: list[int]) -> list[ActivityDTO]:
+        activities = await self.activity_repository.get_activities_by_ids(activities_ids)
+        if not activities:
+            raise NotFoundError(entity="Activity")
+        return [
+            ActivityDTO.model_validate(activity)
+            for activity in activities
+        ]
