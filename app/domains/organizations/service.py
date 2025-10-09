@@ -1,14 +1,20 @@
-from xml.dom.minidom import Entity
+from sqlalchemy.exc import IntegrityError
 
 from app.domains.organizations.models import Organization
 from app.domains.organizations.repository import OrganizationRepository
-from app.domains.organizations.schemas import OrganizationRead, OrganizationRelDTO
-from app.exceptions.exceptions import NotFoundError
+from app.domains.organizations.schemas import OrganizationRelDTO, OrganizationCreate, PhoneNumber
+from app.exceptions.exceptions import NotFoundError, DataIntegrityError
+from app.domains.activities import ActivityService
 
 
 class OrganizationService:
-    def __init__(self, organization_repository: OrganizationRepository) -> None:
+    def __init__(
+            self,
+            organization_repository: OrganizationRepository,
+            activity_service: ActivityService
+    ) -> None:
         self.organization_repository = organization_repository
+        self.activity_service = activity_service
 
     async def get_organizations(self) -> list[OrganizationRelDTO]:
         organizations = await self.organization_repository.get_organizations()
@@ -23,6 +29,24 @@ class OrganizationService:
             raise NotFoundError(entity="Organization")
         return OrganizationRelDTO.model_validate(organization)
 
-
+    async def create_organization(self, organization_data: OrganizationCreate) -> OrganizationRelDTO:
+        organization_orm = Organization(
+            title=organization_data.title,
+            building_id=organization_data.building_id,
+        )
+        organization_orm.phone_numbers = [
+            PhoneNumber(phone_number=phone_number)
+            for phone_number in organization_data.phone_numbers
+        ]
+        organization_orm.activities = await self.activity_service.get_activities_by_ids(
+            organization_data.activity_ids
+        )
+        try:
+            organization = await self.organization_repository.create_organization(organization_orm)
+            await self.organization_repository.session.commit()
+            return OrganizationRelDTO.model_validate(organization)
+        except IntegrityError as e:
+            await self.organization_repository.session.rollback()
+            raise DataIntegrityError(f"Could not create organization: {str(e.orig)}")
 
 
