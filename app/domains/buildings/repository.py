@@ -37,3 +37,9 @@ class BuildingRepository:
 
     async def delete_building(self, building: Building) -> None:
         await self.session.delete(building)
+
+    async def commit(self):
+        await self.session.commit()
+
+    async def rollback(self):
+        await self.session.rollback()

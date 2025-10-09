@@ -49,3 +49,8 @@ class ActivityRepository:
         return activities.scalars().all()
 
 
+    async def commit(self):
+        await self.session.commit()
+
+    async def rollback(self):
+        await self.session.rollback()

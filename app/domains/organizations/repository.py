@@ -32,10 +32,14 @@ class OrganizationRepository:
 
     async def create_organization(self, organization: Organization) -> Organization:
         self.session.add(organization)
-        await self.session.commit()
-        await self.session.refresh(organization)
+        await self.session.flush()
         return organization
 
     async def delete_organization(self, organization: Organization) -> None:
         await self.session.delete(organization)
+
+    async def commit(self):
         await self.session.commit()
+
+    async def rollback(self):
+        await self.session.rollback()
