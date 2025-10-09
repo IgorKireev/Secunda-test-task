@@ -5,7 +5,7 @@ from sqlalchemy.orm import selectinload
 from app.domains import Activity
 
 
-class ActivityRepository():
+class ActivityRepository:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
@@ -31,10 +31,9 @@ class ActivityRepository():
 
     async def create_activity(self, activity: Activity) -> Activity:
         self.session.add(activity)
-        await self.session.commit()
-        await self.session.refresh(activity)
+        await self.session.flush()
         return activity
+
 
     async def delete_activity(self, activity: Activity) -> None:
         await self.session.delete(activity)
-        await self.session.commit()
