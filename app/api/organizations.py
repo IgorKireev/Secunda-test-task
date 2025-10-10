@@ -36,3 +36,13 @@ async def create_organization(
         organization_data: OrganizationCreate
     ):
     return await organization_service.create_organization(organization_data)
+
+@router.delete("/")
+async def delete_organization(
+        organization_service: Annotated[
+            OrganizationService,
+            Depends(get_organization_service)
+        ],
+        organization_id: int
+    ):
+    return await organization_service.delete_organization(organization_id)
