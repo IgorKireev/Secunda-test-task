@@ -16,7 +16,7 @@ class Organization(Base):
         back_populates="organization",
         cascade="all, delete-orphan",
     )
-    building: Mapped["Building"] = relationship(back_populates="organization")
+    building: Mapped["Building"] = relationship(back_populates="organizations")
     activities: Mapped[list["Activity"]] = relationship(
         secondary=association_table,
         back_populates="organizations"
