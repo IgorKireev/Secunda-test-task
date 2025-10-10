@@ -4,7 +4,6 @@ from app.api.buildings import router as building_router
 from app.api.organizations import router as organization_router
 
 
-
 __all__ = [
     "api_v1_router",
     "activity_router",
