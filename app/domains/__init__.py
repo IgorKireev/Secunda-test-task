@@ -1,21 +1,15 @@
-from app.domains.activities import (
-    Activity,
-    ActivityRepository,
-    ActivityDTO,
-    ActivityService,
-)
-from app.domains.buildings import (
-    Building,
-    BuildingRepository,
-    BuildingDTO,
-    BuildingService,
-)
-from app.domains.organizations import (
-    Organization,
-    OrganizationRepository,
-    OrganizationDTO,
-    OrganizationService,
-)
+from app.domains.activities.models import Activity
+from app.domains.activities.repository import ActivityRepository
+from app.domains.activities.schemas import ActivityDTO
+from app.domains.activities.service import ActivityService
+from app.domains.buildings.models import Building
+from app.domains.buildings.repository import BuildingRepository
+from app.domains.buildings.schemas import BuildingDTO
+from app.domains.buildings.service import BuildingService
+from app.domains.organizations.models import Organization
+from app.domains.organizations.repository import OrganizationRepository
+from app.domains.organizations.schemas import OrganizationDTO
+from app.domains.organizations.service import OrganizationService
 
 
 __all__ = [
