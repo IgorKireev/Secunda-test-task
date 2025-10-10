@@ -14,5 +14,17 @@ async def get_organizations(
             OrganizationService,
             Depends(get_organization_service)
         ]
-):
+    ):
     return await organization_service.get_organizations()
+
+@router.get("/{organization_id}")
+async def get_organization(
+        organization_service: Annotated[
+            OrganizationService,
+            Depends(get_organization_service)
+        ],
+        organization_id: int
+    ):
+    return organization_service.get_organization(organization_id)
+
+
