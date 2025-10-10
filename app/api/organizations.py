@@ -25,6 +25,14 @@ async def get_organization(
         ],
         organization_id: int
     ):
-    return organization_service.get_organization(organization_id)
+    return await organization_service.get_organization(organization_id)
 
-
+@router.post("/")
+async def create_organization(
+        organization_service: Annotated[
+            OrganizationService,
+            Depends(get_organization_service)
+        ],
+        organization_data: OrganizationCreate
+    ):
+    return await organization_service.create_organization(organization_data)
