@@ -43,8 +43,10 @@ class OrganizationService:
         )
         try:
             organization = await self.organization_repository.create_organization(organization_orm)
+            organization_id = organization.id
             await self.organization_repository.commit()
-            return OrganizationRelDTO.model_validate(organization)
+            reloaded_organization = await self.organization_repository.get_organization(organization_id)
+            return OrganizationRelDTO.model_validate(reloaded_organization)
         except IntegrityError as e:
             await self.organization_repository.rollback()
             raise DataIntegrityError(f"Could not create organization: {str(e.orig)}")
