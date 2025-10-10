@@ -2,7 +2,7 @@ from collections.abc import Sequence
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload, joinedload
-from app.domains import Organization
+from app.domains.organizations.models import Organization
 
 
 class OrganizationRepository:
@@ -23,6 +23,17 @@ class OrganizationRepository:
         query = (
             select(Organization)
             .filter(Organization.id == organization_id)
+            .options(joinedload(Organization.building))
+            .options(selectinload(Organization.phone_numbers))
+            .options(selectinload(Organization.activities))
+        )
+        organization = await self.session.execute(query)
+        return organization.scalar_one_or_none()
+
+    async def get_organization_by_title(self, title: str) -> Organization | None:
+        query = (
+            select(Organization)
+            .filter(Organization.title == title)
             .options(joinedload(Organization.building))
             .options(selectinload(Organization.phone_numbers))
             .options(selectinload(Organization.activities))
