@@ -1,7 +1,8 @@
 from sqlalchemy.exc import IntegrityError
-from app.domains.organizations.models import Organization
+from app.domains.organizations.models import Organization, PhoneNumber
 from app.domains.organizations.repository import OrganizationRepository
-from app.domains.organizations.schemas import OrganizationRelDTO, OrganizationCreate, PhoneNumber
+from app.domains.organizations.schemas import OrganizationCreate
+from app.dtos import OrganizationRelDTO
 from app.exceptions.exceptions import NotFoundError, DataIntegrityError
 from app.domains.activities import ActivityService
 
@@ -34,8 +35,8 @@ class OrganizationService:
             building_id=organization_data.building_id,
         )
         organization_orm.phone_numbers = [
-            PhoneNumber(phone_number=phone_number)
-            for phone_number in organization_data.phone_numbers
+            PhoneNumber(phone_number=p.phone_number)
+            for p in organization_data.phone_numbers
         ]
         organization_orm.activities = await self.activity_service.get_activities_by_ids(
             organization_data.activity_ids
