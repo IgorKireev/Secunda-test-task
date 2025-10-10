@@ -1,6 +1,9 @@
-from app.domains.buildings.schemas import BuildingDTO
-from app.domains.organizations.schemas import OrganizationDTO
-from app.domains.activities.schemas import ActivityDTO
+from app.domains import (
+    ActivityDTO,
+    BuildingDTO,
+    OrganizationDTO,
+)
+
 
 class OrganizationRelDTO(OrganizationDTO):
     building: BuildingDTO
