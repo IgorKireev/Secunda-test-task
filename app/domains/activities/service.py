@@ -1,8 +1,11 @@
-from sqlalchemy.exc import IntegrityError
+from collections.abc import Sequence
 
-from app.domains import Activity
+from sqlalchemy.exc import IntegrityError
+from app.domains.activities.models import Activity
 from app.domains.activities.repository import ActivityRepository
-from app.domains.activities.schemas import ActivityDTO, ActivityRelDTO, ActivityCreate
+from app.domains.activities.schemas import ActivityDTO, ActivityCreate
+from app.domains.organizations.schemas import OrganizationDTO
+from app.dtos import ActivityRelDTO
 from app.exceptions.exceptions import NotFoundError, DataIntegrityError
 
 
@@ -19,10 +22,12 @@ class ActivityService:
         ]
 
 
-    async def get_activity(self, activity_id: int) -> ActivityRelDTO:
+    async def get_activity(self, activity_id: int, organizations: bool = False) -> ActivityRelDTO | list[OrganizationDTO]:
         activity = await self.activity_repository.get_activity(activity_id)
         if not activity:
             raise NotFoundError(entity="Activity")
+        if organizations:
+            return ActivityRelDTO.model_validate(activity).organizations
         return ActivityRelDTO.model_validate(activity)
 
 
@@ -32,8 +37,10 @@ class ActivityService:
         )
         try:
            activity = await self.activity_repository.create_activity(activity_orm)
+           activity_id = activity.id
            await self.activity_repository.commit()
-           return ActivityRelDTO.model_validate(activity)
+           reloaded_activity = await self.activity_repository.get_activity(activity_id)
+           return ActivityRelDTO.model_validate(reloaded_activity)
         except IntegrityError as e:
             await self.activity_repository.rollback()
             raise DataIntegrityError(f"Could not create activity: {str(e.orig)}")
@@ -50,11 +57,8 @@ class ActivityService:
             await self.activity_repository.rollback()
             raise DataIntegrityError
 
-    async def get_activities_by_ids(self, activities_ids: list[int]) -> list[ActivityDTO]:
+    async def get_activities_by_ids(self, activities_ids: list[int]) -> Sequence[Activity]:
         activities = await self.activity_repository.get_activities_by_ids(activities_ids)
         if not activities:
             raise NotFoundError(entity="Activity")
-        return [
-            ActivityDTO.model_validate(activity)
-            for activity in activities
-        ]
+        return activities
