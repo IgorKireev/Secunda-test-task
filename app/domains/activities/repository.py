@@ -1,8 +1,9 @@
 from collections.abc import Sequence
-from sqlalchemy import select, and_
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
-from app.domains import Activity
+from app.domains.activities.models import Activity
+from app.domains.organizations.models import Organization
 
 
 class ActivityRepository:
@@ -13,7 +14,10 @@ class ActivityRepository:
     async def get_activities(self) -> Sequence[Activity]:
         query = (
             select(Activity)
-            .options(selectinload(Activity.organizations))
+            .options(
+                selectinload(Activity.organizations)
+                .selectinload(Organization.phone_numbers),
+            )
         )
         activities = await self.session.execute(query)
         return activities.scalars().all()
@@ -23,7 +27,10 @@ class ActivityRepository:
         query = (
             select(Activity)
             .filter(Activity.id == activity_id)
-            .options(selectinload(Activity.organizations))
+            .options(
+                selectinload(Activity.organizations)
+                .selectinload(Organization.phone_numbers),
+            )
         )
         activity = await self.session.execute(query)
         return activity.scalar_one_or_none()
