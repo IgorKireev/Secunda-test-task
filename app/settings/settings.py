@@ -9,14 +9,8 @@ class Settings(BaseSettings):
     DB_PASS: str
     DB_NAME: str
 
-    REDIS_HOST: str
-    REDIS_PORT: int
-    REDIS_DB: int
-
-    JWT_SECRET_KEY: str
-    JWT_ALGORITHM: str
-    ACCESS_TOKEN_EXPIRE_MINUTES: int
-    REFRESH_TOKEN_EXPIRE_DAYS: int
+    JWT_SECRET_KEY: str = "secret_key"
+    JWT_ENCODE_ALGORITHM: str = "HS256"
 
     @property
     def database_url_asyncpg(self):
@@ -24,10 +18,6 @@ class Settings(BaseSettings):
             f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}"
             f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
         )
-
-    @property
-    def redis_url(self) -> str:
-        return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
 
     model_config = SettingsConfigDict(
         env_file=".env",
