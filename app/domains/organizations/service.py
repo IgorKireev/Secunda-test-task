@@ -29,6 +29,12 @@ class OrganizationService:
             raise NotFoundError(entity="Organization")
         return OrganizationRelDTO.model_validate(organization)
 
+    async def get_organization_by_title(self, title: str) -> OrganizationRelDTO:
+        organization = await self.organization_repository.get_organization_by_title(title)
+        if not organization:
+            raise NotFoundError(entity="Organization")
+        return OrganizationRelDTO.model_validate(organization)
+
     async def create_organization(self, organization_data: OrganizationCreate) -> OrganizationRelDTO:
         organization_orm = Organization(
             title=organization_data.title,
