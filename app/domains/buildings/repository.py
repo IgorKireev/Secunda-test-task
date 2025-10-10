@@ -2,7 +2,8 @@ from collections.abc import Sequence
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
-from app.domains import Building
+from app.domains.buildings.models import Building
+from app.domains.organizations.models import Organization
 
 
 class BuildingRepository:
@@ -13,7 +14,10 @@ class BuildingRepository:
     async def get_buildings(self) -> Sequence[Building]:
         query = (
             select(Building)
-            .options(selectinload(Building.organization))
+            .options(
+                selectinload(Building.organizations)
+                .selectinload(Organization.phone_numbers),
+            )
         )
         buildings = await self.session.execute(query)
         return buildings.scalars().all()
@@ -23,7 +27,10 @@ class BuildingRepository:
         query = (
             select(Building)
             .filter(Building.id == building_id)
-            .options(selectinload(Building.organization))
+            .options(
+                selectinload(Building.organizations)
+                .selectinload(Organization.phone_numbers),
+            )
         )
         building = await self.session.execute(query)
         return building.scalar_one_or_none()
