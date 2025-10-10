@@ -1,10 +1,10 @@
 from sqlalchemy.exc import IntegrityError
 from app.domains.organizations.models import Organization, PhoneNumber
 from app.domains.organizations.repository import OrganizationRepository
-from app.domains.organizations.schemas import OrganizationCreate
 from app.dtos import OrganizationRelDTO
 from app.exceptions.exceptions import NotFoundError, DataIntegrityError
-from app.domains.activities import ActivityService
+from app.domains.activities.service import ActivityService
+from app.domains.organizations.schemas import OrganizationCreate
 
 
 class OrganizationService:

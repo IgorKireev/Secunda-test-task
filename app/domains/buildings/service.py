@@ -1,10 +1,10 @@
 from sqlalchemy.exc import IntegrityError
 from app.domains.buildings.models import Building
 from app.domains.buildings.repository import BuildingRepository
-from app.domains.buildings.schemas import BuildingCreate
-from app.domains.organizations.schemas import OrganizationDTO
 from app.dtos import BuildingRelDTO
 from app.exceptions.exceptions import NotFoundError, DataIntegrityError
+from app.domains.buildings.schemas import BuildingCreate
+from app.domains.organizations.schemas import OrganizationDTO
 
 
 class BuildingService:

@@ -1,12 +1,11 @@
 from collections.abc import Sequence
-
 from sqlalchemy.exc import IntegrityError
 from app.domains.activities.models import Activity
 from app.domains.activities.repository import ActivityRepository
-from app.domains.activities.schemas import ActivityDTO, ActivityCreate
-from app.domains.organizations.schemas import OrganizationDTO
 from app.dtos import ActivityRelDTO
 from app.exceptions.exceptions import NotFoundError, DataIntegrityError
+from app.domains.activities.schemas import ActivityCreate
+from app.domains.organizations.schemas import OrganizationDTO
 
 
 class ActivityService:
