@@ -1,7 +1,9 @@
 from app.dependencies.factories import repository_factory
-from app.domains.activities.repository import ActivityRepository
-from app.domains.organizations.repository import OrganizationRepository
-from app.domains.buildings.repository import BuildingRepository
+from app.domains import (
+    ActivityRepository,
+    BuildingRepository,
+    OrganizationRepository,
+)
 
 get_activity_repository = repository_factory(ActivityRepository)
 get_organization_repository = repository_factory(OrganizationRepository)
