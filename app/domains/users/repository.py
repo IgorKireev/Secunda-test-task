@@ -14,10 +14,7 @@ class UserRepository:
         return users
 
     async def get_user(self, user_id: int) -> User:
-        query = (
-            select(User)
-            .filter(User.id == user_id)
-        )
+        query = select(User).filter(User.id == user_id)
         user = await self.session.execute(query)
         return user.scalar_one_or_none()
 
