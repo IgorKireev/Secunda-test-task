@@ -4,10 +4,10 @@ from pydantic import BaseModel, Field, EmailStr, ConfigDict, field_validator
 class UserBase(BaseModel):
     username: str = Field(min_length=1, max_length=30)
 
-class EmailMixin(BaseModel):
+class EmailSchemaMixin(BaseModel):
     email: EmailStr
 
-class PasswordValidatorMixin(BaseModel):
+class PasswordSchemaMixin(BaseModel):
     password: str
 
     @classmethod
@@ -17,13 +17,13 @@ class PasswordValidatorMixin(BaseModel):
             raise ValueError("Password must be at least 8 characters")
         return value
 
-class UserCreate(UserBase, EmailMixin, PasswordValidatorMixin):
+class UserCreate(UserBase, EmailSchemaMixin, PasswordSchemaMixin):
     pass
 
-class UserLogin(EmailMixin, PasswordValidatorMixin):
+class UserLogin(EmailSchemaMixin, PasswordSchemaMixin):
     pass
 
-class User(UserBase, EmailMixin):
+class UserDTO(UserBase, EmailSchemaMixin):
     id: int
 
     model_config = ConfigDict(
