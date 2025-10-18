@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from app.domains.organizations.models import Organization #noqa
 from app.domains.activities.models import Activity #noqa
 from app.domains.buildings.models import Building #noqa
+from app.domains.users.models import User #noqa
 from app.infrastructure import Base
 from app.settings import get_settings
 
