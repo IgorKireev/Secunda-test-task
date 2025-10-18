@@ -1,13 +1,17 @@
 from fastapi import FastAPI
 
-from app.core.exceptions import (
+from app.core import (
     NotFoundError,
     DataIntegrityError,
     Conflict,
     Unauthorized,
     Forbidden,
+    not_found_exception_handler,
+    data_integrity_exception_handler,
+    conflict_exception_handler,
+    unauthorized_exception_handler,
+    forbidden_exception_handler,
 )
-from app.core import exception_handlers
 from app.api import (
     api_v1_router,
     auth_router,
@@ -28,23 +32,23 @@ app.include_router(router=user_router)
 
 app.add_exception_handler(
     NotFoundError,
-    exception_handlers.not_found_exception_handler,
+    not_found_exception_handler,
 )
 app.add_exception_handler(
     DataIntegrityError,
-    exception_handlers.data_integrity_exception_handler,
+    data_integrity_exception_handler,
 )
 app.add_exception_handler(
     Conflict,
-    exception_handlers.conflict_exception_handler,
+    conflict_exception_handler,
 )
 app.add_exception_handler(
     Unauthorized,
-    exception_handlers.unauthorized_exception_handler,
+    unauthorized_exception_handler,
 )
 app.add_exception_handler(
     Forbidden,
-    exception_handlers.forbidden_exception_handler,
+    forbidden_exception_handler,
 )
 
 
