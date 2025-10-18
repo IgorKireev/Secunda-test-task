@@ -1,12 +1,17 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, status
 from app.dependencies import get_activity_service
+from app.dependencies.auth import role_required
 from app.dtos import ActivityRelDTO
 from app.domains.activities.schemas import ActivityCreate
 from app.domains.activities.service import ActivityService
 
 
-router = APIRouter(prefix="/activities", tags=["Activities"])
+router = APIRouter(
+    prefix="/activities",
+    tags=["Activities"],
+    dependencies=[Depends(role_required(["admin", "moderator"]))],
+)
 
 
 @router.get(
@@ -17,12 +22,10 @@ router = APIRouter(prefix="/activities", tags=["Activities"])
     description="Возвращает список всех деятельностей",
 )
 async def get_activity(
-        activity_service: Annotated[
-            ActivityService,
-            Depends(get_activity_service)
-        ]
-    ):
+    activity_service: Annotated[ActivityService, Depends(get_activity_service)],
+):
     return await activity_service.get_activities()
+
 
 @router.get(
     "/{activity_id}",
@@ -32,12 +35,9 @@ async def get_activity(
     description="Возвращает информацию о конкретной деятельности",
 )
 async def get_activity(
-        activity_service: Annotated[
-            ActivityService,
-            Depends(get_activity_service)
-        ],
-        activity_id: int
-    ):
+    activity_service: Annotated[ActivityService, Depends(get_activity_service)],
+    activity_id: int,
+):
     return await activity_service.get_activity(activity_id)
 
 
@@ -49,12 +49,9 @@ async def get_activity(
     description="Создает новую деятельность",
 )
 async def create_activity(
-        activity_service: Annotated[
-            ActivityService,
-            Depends(get_activity_service)
-        ],
-        activity_data: ActivityCreate
-    ):
+    activity_service: Annotated[ActivityService, Depends(get_activity_service)],
+    activity_data: ActivityCreate,
+):
     return await activity_service.create_activity(activity_data)
 
 
@@ -65,10 +62,7 @@ async def create_activity(
     description="Удаляет деятельность из системы",
 )
 async def delete_activity(
-        activity_service: Annotated[
-            ActivityService,
-            Depends(get_activity_service)
-        ],
-        activity_id: int
-    ):
+    activity_service: Annotated[ActivityService, Depends(get_activity_service)],
+    activity_id: int,
+):
     return await activity_service.delete_activity(activity_id)

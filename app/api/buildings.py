@@ -1,11 +1,16 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, status
 from app.dependencies import get_building_service
+from app.dependencies.auth import role_required
 from app.dtos import BuildingRelDTO
 from app.domains.buildings.schemas import BuildingCreate
 from app.domains.buildings.service import BuildingService
 
-router = APIRouter(prefix="/buildings", tags=["Buildings"])
+router = APIRouter(
+    prefix="/buildings",
+    tags=["Buildings"],
+    dependencies=[Depends(role_required(["admin", "moderator"]))],
+)
 
 
 @router.get(
@@ -16,11 +21,8 @@ router = APIRouter(prefix="/buildings", tags=["Buildings"])
     description="Возвращает список всех зданий",
 )
 async def get_buildings(
-        building_service: Annotated[
-            BuildingService,
-            Depends(get_building_service)
-        ]
-    ):
+    building_service: Annotated[BuildingService, Depends(get_building_service)],
+):
     return await building_service.get_buildings()
 
 
@@ -32,13 +34,11 @@ async def get_buildings(
     description="Возвращает информацию о конкретном здании",
 )
 async def get_building(
-        building_service: Annotated[
-            BuildingService,
-            Depends(get_building_service)
-        ],
-        building_id: int,
-    ):
+    building_service: Annotated[BuildingService, Depends(get_building_service)],
+    building_id: int,
+):
     return await building_service.get_building(building_id)
+
 
 @router.post(
     "/",
@@ -48,12 +48,9 @@ async def get_building(
     description="Создает новое здание",
 )
 async def create_building(
-        building_service: Annotated[
-            BuildingService,
-            Depends(get_building_service)
-        ],
-        building_data: BuildingCreate,
-    ):
+    building_service: Annotated[BuildingService, Depends(get_building_service)],
+    building_data: BuildingCreate,
+):
     return await building_service.create_building(building_data)
 
 
@@ -64,10 +61,7 @@ async def create_building(
     description="Удаляет здание из системы",
 )
 async def delete_building(
-        building_service: Annotated[
-            BuildingService,
-            Depends(get_building_service)
-        ],
-        building_id: int,
-    ):
+    building_service: Annotated[BuildingService, Depends(get_building_service)],
+    building_id: int,
+):
     return await building_service.delete_building(building_id)

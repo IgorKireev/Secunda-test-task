@@ -1,12 +1,17 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, status
 from app.dependencies import get_organization_service
+from app.dependencies.auth import role_required
 from app.dtos import OrganizationRelDTO
 from app.domains.organizations.schemas import OrganizationCreate
 from app.domains.organizations.service import OrganizationService
 
 
-router = APIRouter(prefix="/organizations", tags=["Organizations"])
+router = APIRouter(
+    prefix="/organizations",
+    tags=["Organizations"],
+    dependencies=[Depends(role_required(["admin", "moderator"]))],
+)
 
 
 @router.get(
@@ -17,12 +22,12 @@ router = APIRouter(prefix="/organizations", tags=["Organizations"])
     description="Возвращает список всех организаций",
 )
 async def get_organizations(
-        organization_service: Annotated[
-            OrganizationService,
-            Depends(get_organization_service)
-        ]
-    ):
+    organization_service: Annotated[
+        OrganizationService, Depends(get_organization_service)
+    ],
+):
     return await organization_service.get_organizations()
+
 
 @router.get(
     "/{organization_id}",
@@ -32,13 +37,13 @@ async def get_organizations(
     description="Возвращает информацию о конкретной организации",
 )
 async def get_organization(
-        organization_service: Annotated[
-            OrganizationService,
-            Depends(get_organization_service)
-        ],
-        organization_id: int
-    ):
+    organization_service: Annotated[
+        OrganizationService, Depends(get_organization_service)
+    ],
+    organization_id: int,
+):
     return await organization_service.get_organization(organization_id)
+
 
 @router.post(
     "/",
@@ -48,13 +53,13 @@ async def get_organization(
     description="Создает новую организацию",
 )
 async def create_organization(
-        organization_service: Annotated[
-            OrganizationService,
-            Depends(get_organization_service)
-        ],
-        organization_data: OrganizationCreate
-    ):
+    organization_service: Annotated[
+        OrganizationService, Depends(get_organization_service)
+    ],
+    organization_data: OrganizationCreate,
+):
     return await organization_service.create_organization(organization_data)
+
 
 @router.delete(
     "/{organization_id}",
@@ -63,10 +68,9 @@ async def create_organization(
     description="Удаляет организацию из системы",
 )
 async def delete_organization(
-        organization_service: Annotated[
-            OrganizationService,
-            Depends(get_organization_service)
-        ],
-        organization_id: int
-    ):
+    organization_service: Annotated[
+        OrganizationService, Depends(get_organization_service)
+    ],
+    organization_id: int,
+):
     return await organization_service.delete_organization(organization_id)

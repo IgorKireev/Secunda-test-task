@@ -1,11 +1,14 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, status
 from app.dependencies import get_user_service
+from app.dependencies.auth import role_required
 from app.domains.users.schemas import UserCreate, UserResponse
 from app.domains.users.service import UserService
 
 
-router = APIRouter(prefix="/users", tags=["Users"])
+router = APIRouter(
+    prefix="/users", tags=["Users"], dependencies=[Depends(role_required(["admin"]))]
+)
 
 
 @router.get(
@@ -15,13 +18,9 @@ router = APIRouter(prefix="/users", tags=["Users"])
     summary="Получить всех пользователей",
     description="Возвращает список всех пользователей",
 )
-async def get_users(
-        user_service: Annotated[
-            UserService,
-            Depends(get_user_service)
-        ]
-    ):
+async def get_users(user_service: Annotated[UserService, Depends(get_user_service)]):
     return await user_service.get_users()
+
 
 @router.get(
     "/{user_id}",
@@ -31,13 +30,10 @@ async def get_users(
     description="Возвращает информацию о конкретном пользователе",
 )
 async def get_user(
-        user_service: Annotated[
-            UserService,
-            Depends(get_user_service)
-        ],
-        user_id: int
-    ):
+    user_service: Annotated[UserService, Depends(get_user_service)], user_id: int
+):
     return await user_service.get_user(user_id)
+
 
 @router.post(
     "/",
@@ -47,13 +43,11 @@ async def get_user(
     description="Создает нового пользователя",
 )
 async def create_user(
-        user_service: Annotated[
-            UserService,
-            Depends(get_user_service)
-        ],
-        user_data: UserCreate
-    ):
+    user_service: Annotated[UserService, Depends(get_user_service)],
+    user_data: UserCreate,
+):
     return await user_service.create_user(user_data)
+
 
 @router.delete(
     "/{user_id}",
@@ -62,10 +56,6 @@ async def create_user(
     description="Удаляет пользователя из системы",
 )
 async def delete_user(
-        user_service: Annotated[
-            UserService,
-            Depends(get_user_service)
-        ],
-        user_id: int
-    ):
+    user_service: Annotated[UserService, Depends(get_user_service)], user_id: int
+):
     return await user_service.delete_user(user_id)
