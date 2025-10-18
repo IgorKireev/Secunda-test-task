@@ -10,9 +10,7 @@ from app.settings import get_settings
 settings = get_settings()
 
 async_engine = create_async_engine(
-    url=settings.database_url_asyncpg,
-    echo=False, pool_size=5,
-    max_overflow=10
+    url=settings.database_url_asyncpg, echo=False, pool_size=5, max_overflow=10
 )
 
 async_session_factory = async_sessionmaker(
