@@ -6,6 +6,7 @@ from app.api import (
     activity_router,
     building_router,
     organization_router,
+    user_router,
 )
 
 
@@ -14,6 +15,7 @@ app.include_router(router=api_v1_router)
 app.include_router(router=activity_router)
 app.include_router(router=building_router)
 app.include_router(router=organization_router)
+app.include_router(router=user_router)
 
 
 @app.exception_handler(NotFoundError)
