@@ -14,11 +14,8 @@ class User(Base):
     __tablename__ = "users"
 
     name: Mapped[str] = mapped_column(String(30))
-    email: Mapped[str] = mapped_column(
-        String(255)
-    )
+    email: Mapped[str] = mapped_column(String(255), unique=True)
     password: Mapped[str] = mapped_column(String(128))
     role: Mapped[Role] = mapped_column(
-        Enum(Role, values_callable=lambda x: [e.value for e in x]),
-        default=Role.USER
+        Enum(Role, values_callable=lambda x: [e.value for e in x]), default=Role.USER
     )
