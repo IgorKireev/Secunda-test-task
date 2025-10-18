@@ -5,6 +5,7 @@ from app.dependencies.repositories import (
     get_building_repository,
     get_organization_repository,
     get_user_repository,
+    get_auth_repository,
 )
 from app.domains import (
     ActivityRepository,
@@ -15,47 +16,48 @@ from app.domains import (
     OrganizationService,
     UserRepository,
     UserService,
+    AuthRepository,
+    AuthService,
 )
 
 
 def get_activity_service(
-        activity_repository: Annotated[
-            ActivityRepository,
-            Depends(get_activity_repository)
-        ]
-    ):
+    activity_repository: Annotated[
+        ActivityRepository, Depends(get_activity_repository)
+    ],
+):
     return ActivityService(
         activity_repository=activity_repository,
     )
 
+
 async def get_building_service(
-        building_repository: Annotated[
-            BuildingRepository,
-            Depends(get_building_repository)
-        ]
-    ):
-    return BuildingService(
-        building_repository=building_repository
-    )
+    building_repository: Annotated[
+        BuildingRepository, Depends(get_building_repository)
+    ],
+):
+    return BuildingService(building_repository=building_repository)
+
 
 def get_organization_service(
-        organization_repository: Annotated[
-            OrganizationRepository,
-            Depends(get_organization_repository)
-        ],
-        activity_service: Annotated[ActivityService, Depends(get_activity_service)],
-    ):
+    organization_repository: Annotated[
+        OrganizationRepository, Depends(get_organization_repository)
+    ],
+    activity_service: Annotated[ActivityService, Depends(get_activity_service)],
+):
     return OrganizationService(
         organization_repository=organization_repository,
-        activity_service=activity_service
+        activity_service=activity_service,
     )
 
+
 def get_user_service(
-        user_repository: Annotated[
-            UserRepository,
-            Depends(get_user_repository)
-        ]
-    ):
-    return UserService(
-        user_repository=user_repository
-    )
+    user_repository: Annotated[UserRepository, Depends(get_user_repository)],
+):
+    return UserService(user_repository=user_repository)
+
+
+def get_auth_service(
+    auth_repository: Annotated[AuthRepository, Depends(get_auth_repository)],
+):
+    return AuthService(auth_repository=auth_repository)
