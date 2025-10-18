@@ -3,13 +3,12 @@ from logging.config import fileConfig
 
 from alembic import context
 from sqlalchemy.ext.asyncio import create_async_engine
-from app.domains.organizations.models import Organization #noqa
-from app.domains.activities.models import Activity #noqa
-from app.domains.buildings.models import Building #noqa
-from app.domains.users.models import User #noqa
+from app.domains.organizations.models import Organization  # noqa
+from app.domains.activities.models import Activity  # noqa
+from app.domains.buildings.models import Building  # noqa
+from app.domains.users.models import User  # noqa
 from app.infrastructure import Base
 from app.settings import get_settings
-
 
 
 config = context.config
@@ -20,7 +19,6 @@ if config.config_file_name is not None:
 
 
 target_metadata = Base.metadata
-
 
 
 def run_migrations_offline() -> None:
