@@ -4,6 +4,7 @@ from app.dependencies.repositories import (
     get_activity_repository,
     get_building_repository,
     get_organization_repository,
+    get_user_repository,
 )
 from app.domains import (
     ActivityRepository,
@@ -12,6 +13,8 @@ from app.domains import (
     BuildingService,
     OrganizationRepository,
     OrganizationService,
+    UserRepository,
+    UserService,
 )
 
 
@@ -45,4 +48,14 @@ def get_organization_service(
     return OrganizationService(
         organization_repository=organization_repository,
         activity_service=activity_service
+    )
+
+def get_user_service(
+        user_repository: Annotated[
+            UserRepository,
+            Depends(get_user_repository)
+        ]
+    ):
+    return UserService(
+        user_repository=user_repository
     )
