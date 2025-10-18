@@ -3,6 +3,7 @@ from app.dependencies.services import (
     get_activity_service,
     get_organization_service,
     get_user_service,
+    get_auth_service,
 )
 
 
@@ -10,5 +11,6 @@ __all__ = [
     "get_activity_service",
     "get_building_service",
     "get_organization_service",
-    "get_user_service"
+    "get_user_service",
+    "get_auth_service",
 ]
