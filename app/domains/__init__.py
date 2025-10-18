@@ -10,6 +10,10 @@ from app.domains.organizations.models import Organization
 from app.domains.organizations.repository import OrganizationRepository
 from app.domains.organizations.schemas import OrganizationDTO
 from app.domains.organizations.service import OrganizationService
+from app.domains.users.models import User
+from app.domains.users.repository import UserRepository
+from app.domains.users.schemas import UserResponse
+from app.domains.users.service import UserService
 
 
 __all__ = [
@@ -25,5 +29,9 @@ __all__ = [
     "Organization",
     "OrganizationRepository",
     "OrganizationDTO",
-    "OrganizationService"
+    "OrganizationService",
+    "User",
+    "UserRepository",
+    "UserResponse",
+    "UserService"
 ]
