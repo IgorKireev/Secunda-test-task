@@ -8,6 +8,9 @@ T = TypeVar("T")
 
 
 def repository_factory(repo_class: Type[T]):
-    async def _get_repository(session: Annotated[AsyncSession, Depends(get_session)]) -> T:
+    async def _get_repository(
+        session: Annotated[AsyncSession, Depends(get_session)],
+    ) -> T:
         return repo_class(session=session)
+
     return _get_repository
