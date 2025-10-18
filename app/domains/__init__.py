@@ -14,6 +14,8 @@ from app.domains.users.models import User
 from app.domains.users.repository import UserRepository
 from app.domains.users.schemas import UserResponse
 from app.domains.users.service import UserService
+from app.domains.users.auth.repository import AuthRepository
+from app.domains.users.auth.service import AuthService
 
 
 __all__ = [
@@ -33,5 +35,7 @@ __all__ = [
     "User",
     "UserRepository",
     "UserResponse",
-    "UserService"
+    "UserService",
+    "AuthRepository",
+    "AuthService",
 ]
