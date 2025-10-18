@@ -1,6 +1,6 @@
 class NotFoundError(Exception):
     def __init__(self, entity: str) -> None:
-        self.entity =  entity
+        self.entity = entity
         self.detail = f"{entity} not found"
         super().__init__(self.detail)
 
@@ -8,6 +8,7 @@ class NotFoundError(Exception):
 class DataIntegrityError(Exception):
     def __init__(self, message: str = "Data integrity violation") -> None:
         super().__init__(message)
+
 
 class Conflict(Exception):
     def __init__(self, message: str = "User already exists") -> None:
