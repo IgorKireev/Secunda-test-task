@@ -2,7 +2,7 @@ from sqlalchemy.exc import IntegrityError
 from app.domains.users.models import User
 from app.domains.users.repository import UserRepository
 from app.domains.users.schemas import UserDTO, UserCreate
-from app.auth.security import get_password_hash
+from app.domains.users.auth.security import get_password_hash
 from app.exceptions.exceptions import NotFoundError, DataIntegrityError
 
 
