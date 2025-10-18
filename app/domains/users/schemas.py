@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, EmailStr, ConfigDict, field_validator
 
 
 class UserBase(BaseModel):
-    username: str = Field(min_length=1, max_length=30)
+    name: str = Field(min_length=1, max_length=30)
 
 class EmailSchemaMixin(BaseModel):
     email: EmailStr
@@ -31,3 +31,5 @@ class UserDTO(UserBase, EmailSchemaMixin):
         frozen=True,
     )
 
+class UserResponse(UserDTO):
+    pass
