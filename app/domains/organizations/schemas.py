@@ -6,7 +6,7 @@ class PhoneNumber(BaseModel):
     phone_number: str
 
     @classmethod
-    @field_validator('phone_number')
+    @field_validator("phone_number")
     def validate_number(cls, v: str) -> str:
         parsed = phonenumbers.parse(v, None)
         if not phonenumbers.is_valid_number(parsed):
@@ -24,16 +24,13 @@ class OrganizationBase(BaseModel):
     phone_numbers: list[PhoneNumber] = Field(default_factory=list)
 
     @classmethod
-    @field_validator('phone_numbers', mode='before')
+    @field_validator("phone_numbers", mode="before")
     def ensure_phone_objects(cls, v: str | PhoneNumber | list[str | PhoneNumber]):
         if not v:
             return []
         if isinstance(v, (str, PhoneNumber)):
             v = [v]
-        return [
-            PhoneNumber(phone_number=p) if isinstance(p, str) else p
-            for p in v
-        ]
+        return [PhoneNumber(phone_number=p) if isinstance(p, str) else p for p in v]
 
 
 class OrganizationCreate(OrganizationBase):
@@ -48,4 +45,3 @@ class OrganizationDTO(OrganizationBase):
         from_attributes=True,
         frozen=True,
     )
-

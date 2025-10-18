@@ -2,7 +2,7 @@ from sqlalchemy.exc import IntegrityError
 from app.domains.buildings.models import Building
 from app.domains.buildings.repository import BuildingRepository
 from app.dtos import BuildingRelDTO
-from app.exceptions.exceptions import NotFoundError, DataIntegrityError
+from app.core.exceptions import NotFoundError, DataIntegrityError
 from app.domains.buildings.schemas import BuildingCreate
 from app.domains.organizations.schemas import OrganizationDTO
 
@@ -11,23 +11,19 @@ class BuildingService:
     def __init__(self, building_repository: BuildingRepository) -> None:
         self.building_repository = building_repository
 
-
     async def get_buildings(self) -> list[BuildingRelDTO]:
         buildings = await self.building_repository.get_buildings()
-        return [
-            BuildingRelDTO.model_validate(building)
-            for building in buildings
-        ]
+        return [BuildingRelDTO.model_validate(building) for building in buildings]
 
-
-    async def get_building(self, building_id: int, organizations: bool = False) -> BuildingRelDTO | list[OrganizationDTO]:
+    async def get_building(
+        self, building_id: int, organizations: bool = False
+    ) -> BuildingRelDTO | list[OrganizationDTO]:
         building = await self.building_repository.get_building(building_id)
         if not building:
             raise NotFoundError(entity="Building")
         if organizations:
             return BuildingRelDTO.model_validate(building).organizations
         return BuildingRelDTO.model_validate(building)
-
 
     async def create_building(self, building_data: BuildingCreate) -> BuildingRelDTO:
         building_orm = Building(
@@ -44,7 +40,6 @@ class BuildingService:
         except IntegrityError as e:
             await self.building_repository.rollback()
             raise DataIntegrityError(f"Could not create building: {str(e.orig)}")
-
 
     async def delete_building(self, building_id: int) -> None:
         building = await self.building_repository.get_building(building_id)

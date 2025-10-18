@@ -10,37 +10,32 @@ class BuildingRepository:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
-
     async def get_buildings(self) -> Sequence[Building]:
-        query = (
-            select(Building)
-            .options(
-                selectinload(Building.organizations)
-                .selectinload(Organization.phone_numbers),
-            )
+        query = select(Building).options(
+            selectinload(Building.organizations).selectinload(
+                Organization.phone_numbers
+            ),
         )
         buildings = await self.session.execute(query)
         return buildings.scalars().all()
-
 
     async def get_building(self, building_id: int) -> Building | None:
         query = (
             select(Building)
             .filter(Building.id == building_id)
             .options(
-                selectinload(Building.organizations)
-                .selectinload(Organization.phone_numbers),
+                selectinload(Building.organizations).selectinload(
+                    Organization.phone_numbers
+                ),
             )
         )
         building = await self.session.execute(query)
         return building.scalar_one_or_none()
 
-
     async def create_building(self, building: Building) -> Building:
         self.session.add(building)
         await self.session.flush()
         return building
-
 
     async def delete_building(self, building: Building) -> None:
         await self.session.delete(building)

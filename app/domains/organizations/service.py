@@ -2,16 +2,16 @@ from sqlalchemy.exc import IntegrityError
 from app.domains.organizations.models import Organization, PhoneNumber
 from app.domains.organizations.repository import OrganizationRepository
 from app.dtos import OrganizationRelDTO
-from app.exceptions.exceptions import NotFoundError, DataIntegrityError
+from app.core.exceptions import NotFoundError, DataIntegrityError
 from app.domains.activities.service import ActivityService
 from app.domains.organizations.schemas import OrganizationCreate
 
 
 class OrganizationService:
     def __init__(
-            self,
-            organization_repository: OrganizationRepository,
-            activity_service: ActivityService
+        self,
+        organization_repository: OrganizationRepository,
+        activity_service: ActivityService,
     ) -> None:
         self.organization_repository = organization_repository
         self.activity_service = activity_service
@@ -24,18 +24,24 @@ class OrganizationService:
         ]
 
     async def get_organization(self, organization_id: int) -> OrganizationRelDTO:
-        organization = await self.organization_repository.get_organization(organization_id)
+        organization = await self.organization_repository.get_organization(
+            organization_id
+        )
         if not organization:
             raise NotFoundError(entity="Organization")
         return OrganizationRelDTO.model_validate(organization)
 
     async def get_organization_by_title(self, title: str) -> OrganizationRelDTO:
-        organization = await self.organization_repository.get_organization_by_title(title)
+        organization = await self.organization_repository.get_organization_by_title(
+            title
+        )
         if not organization:
             raise NotFoundError(entity="Organization")
         return OrganizationRelDTO.model_validate(organization)
 
-    async def create_organization(self, organization_data: OrganizationCreate) -> OrganizationRelDTO:
+    async def create_organization(
+        self, organization_data: OrganizationCreate
+    ) -> OrganizationRelDTO:
         organization_orm = Organization(
             title=organization_data.title,
             building_id=organization_data.building_id,
@@ -48,18 +54,23 @@ class OrganizationService:
             organization_data.activity_ids
         )
         try:
-            organization = await self.organization_repository.create_organization(organization_orm)
+            organization = await self.organization_repository.create_organization(
+                organization_orm
+            )
             organization_id = organization.id
             await self.organization_repository.commit()
-            reloaded_organization = await self.organization_repository.get_organization(organization_id)
+            reloaded_organization = await self.organization_repository.get_organization(
+                organization_id
+            )
             return OrganizationRelDTO.model_validate(reloaded_organization)
         except IntegrityError as e:
             await self.organization_repository.rollback()
             raise DataIntegrityError(f"Could not create organization: {str(e.orig)}")
 
-
     async def delete_organization(self, organization_id: int) -> None:
-        organization = await self.organization_repository.get_organization(organization_id)
+        organization = await self.organization_repository.get_organization(
+            organization_id
+        )
         if not organization:
             raise NotFoundError(entity="Organization")
         try:
@@ -68,4 +79,3 @@ class OrganizationService:
         except IntegrityError:
             await self.organization_repository.rollback()
             raise DataIntegrityError
-
