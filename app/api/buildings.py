@@ -38,7 +38,7 @@ async def create_building(
     return await building_service.create_building(building_data)
 
 
-@router.delete("/")
+@router.delete("/{building_id}")
 async def delete_building(
         building_service: Annotated[
             BuildingService,

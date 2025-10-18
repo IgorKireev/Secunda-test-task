@@ -39,7 +39,7 @@ async def create_activity(
     return await activity_service.create_activity(activity_data)
 
 
-@router.delete("/")
+@router.delete("/{activity_id}")
 async def delete_activity(
         activity_service: Annotated[
             ActivityService,
