@@ -2,8 +2,8 @@ from sqlalchemy.exc import IntegrityError
 from app.domains.users.models import User
 from app.domains.users.repository import UserRepository
 from app.domains.users.schemas import UserDTO, UserCreate
-from app.domains.users.auth.security import get_password_hash
-from app.exceptions.exceptions import NotFoundError, DataIntegrityError
+from app.core.security import get_password_hash
+from app.core.exceptions import NotFoundError, DataIntegrityError
 
 
 class UserService:
@@ -12,10 +12,7 @@ class UserService:
 
     async def get_users(self) -> list[UserDTO]:
         users_orm = await self.user_repository.get_users()
-        users = [
-            UserDTO.model_validate(user)
-            for user in users_orm
-        ]
+        users = [UserDTO.model_validate(user) for user in users_orm]
         return users
 
     async def get_user(self, user_id: int) -> UserDTO | None:
@@ -30,6 +27,7 @@ class UserService:
             name=user_data.name,
             email=user_data.email,
             password=password,
+            role=user_data.role,
         )
         try:
             user = await self.user_repository.create_user(user_orm)
